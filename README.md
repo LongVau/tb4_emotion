@@ -19,8 +19,20 @@ Package ROS 2 Humble độc lập nhận diện 6 biểu cảm khuôn mặt th�
 
 ---
 
-## 2. Biên dịch & Kiểm thử (Build & Test)
+## 2. Tải Pretrained Models & Biên dịch Package (Build & Test)
 
+### Tải Model nhận diện khuôn mặt & biểu cảm (nếu clone từ GitHub chưa có sẵn trong `models/`)
+Trọng số mô hình ONNX (`emotion-ferplus-8.onnx` ~34MB và `face_detection_yunet_2023mar.onnx` ~228KB) đặt trong thư mục `src/tb4_emotion/models/`. Nếu tải mã nguồn từ GitHub về mà thư mục `models/` chưa có sẵn, chạy lệnh sau để tải trực tiếp từ ONNX Model Zoo và OpenCV Zoo:
+```bash
+mkdir -p ~/ros2_ws/src/tb4_emotion/models
+curl -sSL https://github.com/onnx/models/raw/main/validated/vision/body_analysis/emotion_ferplus/model/emotion-ferplus-8.onnx \
+  -o ~/ros2_ws/src/tb4_emotion/models/emotion-ferplus-8.onnx
+curl -sSL https://github.com/opencv/opencv_zoo/raw/main/models/face_detection_yunet/face_detection_yunet_2023mar.onnx \
+  -o ~/ros2_ws/src/tb4_emotion/models/face_detection_yunet_2023mar.onnx
+```
+
+### Biên dịch Package (Build)
+```bash
 ```bash
 cd ~/ros2_ws
 source /opt/ros/humble/setup.bash
@@ -38,11 +50,12 @@ PYTHONPATH=~/ros2_ws/src/tb4_emotion python3 -m pytest -p no:anyio ~/ros2_ws/src
 ## 3. Hướng dẫn Stream Camera từ Windows vào WSL2 & Chạy chương trình
 
 ### Bước 1: Chạy `stream_cam.py` trên Windows (nếu dùng Webcam laptop qua WSL2)
-Mở PowerShell / CMD trên Windows và chạy file đã được copy sẵn tại `C:\Users\sumika\stream_cam.py` (hoặc qua đường dẫn WSL `\\wsl.localhost\Ubuntu-22.04\home\sumika\ros2_ws\src\tb4_emotion\stream_cam.py`):
+Chạy file dưới đây, lưu ý nên lưu bên Windows để dễ kiểm soát:
 ```powershell
-python C:\Users\sumika\stream_cam.py
+stream_cam.py
 ```
-Server MJPEG sẽ phát tại cổng `5005` (`/video`).
+Server MJPEG sẽ phát tại cổng `5005` (`/video`). 
+Nếu không sử dụng WSL, bỏ qua bước này.
 
 ### Bước 2: Mở mô phỏng TurtleBot 4 trên Gazebo (Terminal WSL2 #1)
 Mở một terminal WSL2 riêng để khởi chạy mô phỏng TurtleBot 4:
